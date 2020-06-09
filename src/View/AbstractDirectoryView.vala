@@ -273,10 +273,15 @@ namespace FM {
         protected static Marlin.DndHandler dnd_handler = new Marlin.DndHandler ();
 
         protected unowned Gtk.RecentManager recent;
+        protected unowned Settings app_settings;
 
         public signal void path_change_request (GLib.File location, Marlin.OpenFlag flag, bool new_root);
         public signal void item_hovered (GOF.File? file);
         public signal void selection_changed (GLib.List<GOF.File> gof_file);
+
+        construct {
+            app_settings = GOF.Preferences.get_default ().pf_app_settings;
+        }
 
         protected AbstractDirectoryView (Marlin.View.Slot _slot) {
             slot = _slot;
@@ -299,11 +304,11 @@ namespace FM {
                 draw_when_idle ();
             });
             model = GLib.Object.@new (FM.ListModel.get_type (), null) as FM.ListModel;
-            slot.window.marlin_app.marlin_app_settings.bind ("single-click",
+            app_settings.bind ("single-click",
                                                              this, "single_click_mode", SettingsBindFlags.GET);
-            slot.window.marlin_app.marlin_app_settings.bind ("show-remote-thumbnails",
+            app_settings.bind ("show-remote-thumbnails",
                                                              this, "show_remote_thumbnails", SettingsBindFlags.GET);
-            slot.window.marlin_app.marlin_app_settings.bind ("hide-local-thumbnails",
+            app_settings.bind ("hide-local-thumbnails",
                                                              this, "hide_local_thumbnails", SettingsBindFlags.GET);
 
              /* Currently, "single-click rename" is disabled, matching existing UI
@@ -395,13 +400,13 @@ namespace FM {
             insert_action_group ("common", common_actions);
 
             action_set_state (background_actions, "show-hidden",
-                              slot.window.marlin_app.marlin_app_settings.get_boolean ("show-hiddenfiles"));
+                              app_settings.get_boolean ("show-hiddenfiles"));
 
             action_set_state (background_actions, "show-remote-thumbnails",
-                              slot.window.marlin_app.marlin_app_settings.get_boolean ("show-remote-thumbnails"));
+                              app_settings.get_boolean ("show-remote-thumbnails"));
 
             action_set_state (background_actions, "hide-local-thumbnails",
-                              slot.window.marlin_app.marlin_app_settings.get_boolean ("hide-local-thumbnails"));
+                              app_settings.get_boolean ("hide-local-thumbnails"));
         }
 
         public void zoom_in () {

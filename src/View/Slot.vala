@@ -21,7 +21,6 @@ namespace Marlin.View {
     public class Slot : GOF.AbstractSlot {
         private unowned Marlin.View.ViewContainer ctab;
         private Marlin.ViewMode mode;
-        private int preferred_column_width;
         private FM.AbstractDirectoryView? dir_view = null;
 
         private uint reload_timeout_id = 0;
@@ -78,8 +77,6 @@ namespace Marlin.View {
             ctab = _ctab;
             mode = _mode;
             is_active = false;
-            preferred_column_width = Preferences.marlin_column_view_settings.get_int ("preferred-column-width");
-            width = preferred_column_width;
 
             set_up_directory (_location); /* Connect dir signals before making view */
             make_view ();
@@ -127,7 +124,7 @@ namespace Marlin.View {
         }
 
         private void on_dir_view_size_allocate (Gtk.Allocation alloc) {
-                width = alloc.width;
+            width = alloc.width;
         }
 
         private void on_dir_view_item_hovered (GOF.File? file) {
@@ -153,7 +150,6 @@ namespace Marlin.View {
 
             /*  Column View requires slots to determine their own width (other views' width determined by Window */
             if (mode == Marlin.ViewMode.MILLER_COLUMNS) {
-
                 if (dir.is_empty ()) { /* No files in the file cache */
                     Pango.Rectangle extents;
                     var layout = dir_view.create_pango_layout (null);
@@ -161,7 +157,7 @@ namespace Marlin.View {
                     layout.get_extents (null, out extents);
                     width = (int) Pango.units_to_double (extents.width);
                 } else {
-                    width = preferred_column_width;
+                    width = ((FM.ColumnView)(dir_view)).get_preferred_column_width ();
                 }
 
                 width += dir_view.icon_size + 64; /* allow some extra room for icon padding and right margin*/

@@ -34,6 +34,12 @@ namespace FM {
         private GLib.List<Gtk.TreeRowReference> subdirectories_to_unload = null;
         private GLib.List<GOF.Directory.Async> loaded_subdirectories = null;
 
+        private Settings list_view_settings;
+
+        construct {
+            list_view_settings = new Settings ("io.elementary.files.list-view");
+        }
+
         public ListView (Marlin.View.Slot _slot) {
             base (_slot);
         }
@@ -47,12 +53,12 @@ namespace FM {
         private void append_extra_tree_columns () {
             int fnc = FM.ListModel.ColumnID.FILENAME;
 
-            int preferred_column_width = Preferences.marlin_column_view_settings.get_int ("preferred-column-width");
             for (int k = fnc; k < FM.ListModel.ColumnID.NUM_COLUMNS; k++) {
                 if (k == fnc) {
                     /* name_column already created by AbstractTreeVIew */
                     name_column.set_title (column_titles [0]);
-                    name_column.min_width = preferred_column_width;
+                    /* Set a small min width to suppress terminal warnings when width reduced to zero */
+                    name_column.min_width = 16;
                 } else {
                     var renderer = new Gtk.CellRendererText ();
                     var col = new Gtk.TreeViewColumn.with_attributes (column_titles [k - fnc],
@@ -61,7 +67,6 @@ namespace FM {
                     col.set_sort_column_id (k);
                     col.set_resizable (false);
                     col.set_expand (false);
-                    col.min_width = 24;
                     if (k == FM.ListModel.ColumnID.SIZE || k == FM.ListModel.ColumnID.MODIFIED) {
                         renderer.@set ("xalign", 1.0f);
                     } else {
@@ -197,11 +202,11 @@ namespace FM {
         }
 
         protected override Marlin.ZoomLevel get_set_up_zoom_level () {
-            var zoom = Preferences.marlin_list_view_settings.get_enum ("zoom-level");
-            Preferences.marlin_list_view_settings.bind ("zoom-level", this, "zoom-level", GLib.SettingsBindFlags.SET);
+            var zoom = list_view_settings.get_enum ("zoom-level");
+            list_view_settings.bind ("zoom-level", this, "zoom-level", GLib.SettingsBindFlags.SET);
 
-            minimum_zoom = (Marlin.ZoomLevel)Preferences.marlin_list_view_settings.get_enum ("minimum-zoom-level");
-            maximum_zoom = (Marlin.ZoomLevel)Preferences.marlin_list_view_settings.get_enum ("maximum-zoom-level");
+            minimum_zoom = (Marlin.ZoomLevel)list_view_settings.get_enum ("minimum-zoom-level");
+            maximum_zoom = (Marlin.ZoomLevel)list_view_settings.get_enum ("maximum-zoom-level");
 
             if (zoom_level < minimum_zoom) {
                 zoom_level = minimum_zoom;
@@ -215,8 +220,8 @@ namespace FM {
         }
 
         public override Marlin.ZoomLevel get_normal_zoom_level () {
-            var zoom = Preferences.marlin_list_view_settings.get_enum ("default-zoom-level");
-            Preferences.marlin_list_view_settings.set_enum ("zoom-level", zoom);
+            var zoom = list_view_settings.get_enum ("default-zoom-level");
+            list_view_settings.set_enum ("zoom-level", zoom);
 
             return (Marlin.ZoomLevel)zoom;
         }

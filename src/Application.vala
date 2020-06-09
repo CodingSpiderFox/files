@@ -31,12 +31,9 @@ public class Marlin.Application : Gtk.Application {
     private const uint MAX_WINDOWS = 25;
 
     public int window_count { get; private set; }
-    public Settings marlin_app_settings { get; construct; }
-
     bool quitting = false;
 
     construct {
-        marlin_app_settings = new Settings ("io.elementary.files.preferences");
         /* Needed by Glib.Application */
         this.application_id = Marlin.APP_ID; //Ensures an unique instance.
         this.flags |= ApplicationFlags.HANDLES_COMMAND_LINE;
@@ -57,8 +54,6 @@ public class Marlin.Application : Gtk.Application {
                      "Please use the command: io.elementary.files-pkexec [folder]");
             quit ();
         };
-
-        init_schemas ();
 
         Gtk.IconTheme.get_default ().changed.connect (() => {
             Marlin.IconInfo.clear_caches ();
@@ -244,31 +239,6 @@ public class Marlin.Application : Gtk.Application {
         foreach (var window in this.get_windows ()) {
             ((Marlin.View.Window)window).mount_removed (mount);
         }
-    }
-
-    private void init_schemas () {
-        /* GSettings parameters */
-        Preferences.marlin_icon_view_settings = new Settings ("io.elementary.files.icon-view");
-        Preferences.marlin_list_view_settings = new Settings ("io.elementary.files.list-view");
-        Preferences.marlin_column_view_settings = new Settings ("io.elementary.files.column-view");
-        Preferences.gnome_interface_settings = new Settings ("org.gnome.desktop.interface");
-        Preferences.gnome_privacy_settings = new Settings ("org.gnome.desktop.privacy");
-        Preferences.gtk_file_chooser_settings = new Settings ("org.gtk.Settings.FileChooser");
-
-        /* Bind settings with GOFPreferences */
-        var prefs = GOF.Preferences.get_default ();
-        marlin_app_settings.bind ("show-hiddenfiles", prefs, "show-hidden-files", GLib.SettingsBindFlags.DEFAULT);
-        marlin_app_settings.bind ("show-remote-thumbnails",
-                                   prefs, "show-remote-thumbnails", GLib.SettingsBindFlags.DEFAULT);
-        marlin_app_settings.bind ("hide-local-thumbnails",
-                                   prefs, "hide-local-thumbnails", GLib.SettingsBindFlags.DEFAULT);
-        marlin_app_settings.bind ("date-format", prefs, "date-format", GLib.SettingsBindFlags.DEFAULT);
-        Preferences.gnome_interface_settings.bind ("clock-format",
-                                   GOF.Preferences.get_default (), "clock-format", GLib.SettingsBindFlags.GET);
-        Preferences.gnome_privacy_settings.bind ("remember-recent-files",
-                                   GOF.Preferences.get_default (), "remember-history", GLib.SettingsBindFlags.GET);
-        Preferences.gtk_file_chooser_settings.bind ("sort-directories-first",
-                                   prefs, "sort-directories-first", GLib.SettingsBindFlags.DEFAULT);
     }
 
     public Marlin.View.Window? create_window (File? location = null,

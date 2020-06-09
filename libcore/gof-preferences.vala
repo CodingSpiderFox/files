@@ -36,6 +36,29 @@ namespace GOF {
         public string date_format {set; get; default="iso";}
         public string clock_format {set; get; default="24h";}
 
+        public Settings pf_app_settings { get; construct; }
+
+        construct {
+            pf_app_settings = new Settings ("io.elementary.files.preferences");
+            var gnome_interface_settings = new Settings ("org.gnome.desktop.interface");
+            var gnome_privacy_settings = new Settings ("org.gnome.desktop.privacy");
+            var gtk_file_chooser_settings = new Settings ("org.gtk.Settings.FileChooser");
+
+            pf_app_settings.bind ("show-hiddenfiles", this, "show-hidden-files", GLib.SettingsBindFlags.DEFAULT);
+            pf_app_settings.bind ("show-remote-thumbnails",
+                                       this, "show-remote-thumbnails", GLib.SettingsBindFlags.DEFAULT);
+            pf_app_settings.bind ("hide-local-thumbnails",
+                                       this, "hide-local-thumbnails", GLib.SettingsBindFlags.DEFAULT);
+            pf_app_settings.bind ("date-format", this, "date-format", GLib.SettingsBindFlags.DEFAULT);
+
+            gnome_interface_settings.bind ("clock-format",
+                                   this, "clock-format", GLib.SettingsBindFlags.GET);
+            gnome_privacy_settings.bind ("remember-recent-files",
+                                   this, "remember-history", GLib.SettingsBindFlags.GET);
+            gtk_file_chooser_settings.bind ("sort-directories-first",
+                                   this, "sort-directories-first", GLib.SettingsBindFlags.DEFAULT);
+        }
+
         public static Preferences get_default () {
             if (preferences == null) {
                 preferences = new Preferences ();
