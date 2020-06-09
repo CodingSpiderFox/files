@@ -58,8 +58,7 @@ pantheon_files_exec = executable (
     'View/Widgets/SingleLineEditableLabel.vala',
 
     dependencies : [
-        pantheon_files_deps,
-        vala.find_library('marlin', dirs: meson.current_source_dir ()),
+        pantheon_files_deps
     ],
     install: true,
 )
