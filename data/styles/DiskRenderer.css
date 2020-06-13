@@ -25,20 +25,20 @@
 .source-list.fill-block-warn:hover,
 .source-list.fill-block-warn:selected,
 .source-list.fill-block-warn:selected:focus {
-    background-color: alpha (@ORANGE_500, 0.6);
+    background-color: alpha (@ORANGE_500, 1);
 }
 
 .source-list.fill-block-warn:backdrop {
-    background-color: alpha (@ORANGE_500, 0.2);
+    background-color: alpha (@ORANGE_500, 1);
 }
 
 .source-list.fill-block-critical,
 .source-list.fill-block-critical:hover,
 .source-list.fill-block-critical:selected,
 .source-list.fill-block-critical:selected:focus {
-    background-color: alpha (@STRAWBERRY_500, 0.6);
+    background-color: alpha (@STRAWBERRY_500, 1);
 }
 
 .source-list.fill-block-critical:backdrop {
-    background-color: alpha (@STRAWBERRY_500, 0.2);
+    background-color: alpha (@STRAWBERRY_500, 1);
 }
