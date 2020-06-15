@@ -28,6 +28,7 @@ public class Marlin.CellRendererDisk : Gtk.CellRendererText {
     private const int OFFSET = 3;
     private const int BAR_HEIGHT = 5;
 
+
     construct {
         is_disk = false;
         disk_size = 0;
@@ -74,11 +75,9 @@ public class Marlin.CellRendererDisk : Gtk.CellRendererText {
         double filled_percent = ((double) disk_size - (double) free_space) / (double) disk_size;
         if (filled_percent >= 0.9) {
             context.add_class ("fill-block-critical");
-        }
-        else if (filled_percent >= 0.75) {
+        } else if (filled_percent >= 0.75) {
             context.add_class ("fill-block-warn");
-        }
-        else {
+        } else {
             context.add_class ("fill-block");
         }
 
