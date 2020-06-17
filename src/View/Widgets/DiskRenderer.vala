@@ -28,7 +28,6 @@ public class Marlin.CellRendererDisk : Gtk.CellRendererText {
     private const int OFFSET = 3;
     private const int BAR_HEIGHT = 5;
 
-
     construct {
         is_disk = false;
         disk_size = 0;
